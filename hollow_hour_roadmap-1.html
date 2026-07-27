@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hollow Hour — 1ヶ月ロードマップ</title>
+<style>
+  :root{
+    --bg:#07070b;
+    --card:#12131d;
+    --card-border:#23253a;
+    --text:#e8e9f2;
+    --text-dim:#9296b0;
+    --accent:#aab4e0;
+    --accent-glow:#7d89c9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:radial-gradient(ellipse at 50% 0%, #14162a 0%, var(--bg) 45%);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Segoe UI",Roboto,sans-serif;
+    line-height:1.5;
+    padding-bottom:36px;
+    font-size:15px;
+  }
+  section{scroll-margin-top:52px;}
+
+  /* sticky title + nav / TOC, wraps instead of scrolling horizontally */
+  .sticky-top{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(7,7,11,.92);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--card-border);
+  }
+  .brand-bar{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:8px;
+    padding:9px 14px 6px;
+  }
+  .brand-bar .brand-name{ font-size:1.02rem; font-weight:700; letter-spacing:.02em; }
+  .brand-bar .brand-tag{ font-size:.68rem; color:var(--text-dim); }
+  nav.toc{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+    padding:0 12px 9px;
+  }
+  nav.toc a{
+    font-size:.76rem;
+    font-weight:600;
+    color:var(--text-dim);
+    text-decoration:none;
+    padding:6px 12px;
+    border-radius:20px;
+    border:1px solid var(--card-border);
+    white-space:nowrap;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  nav.toc a.active{
+    color:var(--bg);
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+
+  header{
+    text-align:center;
+    padding:16px 20px 14px;
+  }
+  header h1{
+    margin:0;
+    font-size:1.4rem;
+    letter-spacing:.02em;
+    font-weight:700;
+  }
+  header p{
+    color:var(--text-dim);
+    margin:4px 0 0;
+    font-size:.82rem;
+  }
+
+  .wrap{
+    max-width:680px;
+    margin:0 auto;
+    padding:0 14px;
+  }
+
+  .status-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin:14px 0;
+  }
+  .status-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:12px;
+    padding:9px 6px;
+    text-align:center;
+  }
+  .status-card .num{
+    font-size:1.15rem;
+    font-weight:700;
+    color:var(--accent);
+    line-height:1.2;
+  }
+  .status-card .label{
+    font-size:.64rem;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+
+  .milestones{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:16px;
+    font-size:.8rem;
+  }
+  .milestones .m-head{
+    color:var(--text-dim);
+    font-size:.68rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .milestone-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-top:1px solid var(--card-border);
+  }
+  .milestone-row:first-of-type{border-top:none;}
+  .milestone-row .tier{
+    color:var(--accent);
+    font-weight:600;
+    flex:0 0 auto;
+  }
+  .milestone-row .cond{
+    color:var(--text-dim);
+    text-align:right;
+  }
+
+  .section-title{
+    font-size:1rem;
+    font-weight:700;
+    margin:0 0 3px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:4px 8px;
+  }
+  .section-title .wk{
+    color:var(--accent);
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .week-goal{
+    color:var(--text-dim);
+    font-size:.8rem;
+    margin:0 0 10px;
+  }
+  .week-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:13px;
+    padding:15px 15px;
+    margin-bottom:12px;
+  }
+
+  .task-list{list-style:none;padding:0;margin:0;}
+  .task-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:6px 0;
+    font-size:.82rem;
+    border-top:1px solid rgba(255,255,255,.05);
+  }
+  .task-list li:first-child{border-top:none;}
+  .task-list .box{
+    flex:0 0 auto;
+    width:15px;height:15px;
+    border:1.5px solid var(--accent-glow);
+    border-radius:4px;
+    margin-top:2px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .task-list .box.checked{background:var(--accent-glow);}
+  .task-list li.done span.txt{color:var(--text-dim);text-decoration:line-through;}
+
+  .tag{
+    display:inline-block;
+    font-size:.62rem;
+    padding:1px 7px;
+    border-radius:20px;
+    background:rgba(170,180,224,.12);
+    color:var(--accent);
+    margin-left:5px;
+  }
+  .checkin{
+    margin-top:10px;
+    padding:9px 12px;
+    background:rgba(170,180,224,.06);
+    border:1px dashed var(--card-border);
+    border-radius:10px;
+    font-size:.76rem;
+    color:var(--text-dim);
+  }
+  .checkin b{color:var(--text);}
+
+  footer{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:.72rem;
+    margin-top:24px;
+    padding:0 20px;
+  }
+
+  /* video copy-paste accordion */
+  .video-item{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:13px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .video-item summary{
+    list-style:none;
+    cursor:pointer;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    font-size:.86rem;
+    font-weight:600;
+  }
+  .video-item summary::-webkit-details-marker{display:none;}
+  .video-item summary .vno{
+    color:var(--accent);
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    margin-right:6px;
+  }
+  .video-item summary .chev{
+    color:var(--text-dim);
+    transition:transform .2s;
+    flex:0 0 auto;
+  }
+  .video-item[open] summary .chev{transform:rotate(180deg);}
+  .video-item .body{
+    padding:2px 14px 14px;
+  }
+  .field{margin-top:10px;}
+  .field-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:5px;
+  }
+  .field-label{
+    font-size:.68rem;
+    color:var(--text-dim);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .copy-btn{
+    font-size:.68rem;
+    font-weight:600;
+    color:var(--accent);
+    background:rgba(170,180,224,.1);
+    border:1px solid var(--card-border);
+    border-radius:8px;
+    padding:4px 10px;
+    cursor:pointer;
+  }
+  .copy-btn.copied{
+    color:var(--bg);
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+  .field-body{
+    margin:0;
+    white-space:pre-wrap;
+    word-break:break-word;
+    background:#0b0c14;
+    border:1px solid var(--card-border);
+    border-radius:9px;
+    padding:9px 11px;
+    font-size:.78rem;
+    font-family:inherit;
+    color:var(--text);
+  }
+
+  /* dual-language script lines (ep4+) */
+  :root{ --threat:#e08a8a; --empathy:#8ab4e0; --turn:#e0c48a; --future:#b98ae0; }
+  .legend{ display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; }
+  .legend span{ font-size:.64rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .lg-threat{background:rgba(224,138,138,.15); color:var(--threat);}
+  .lg-empathy{background:rgba(138,180,224,.15); color:var(--empathy);}
+  .lg-turn{background:rgba(224,196,138,.15); color:var(--turn);}
+  .lg-future{background:rgba(185,138,224,.15); color:var(--future);}
+  .line-row{ display:flex; gap:8px; padding:9px 0; border-top:1px solid rgba(255,255,255,.05); }
+  .line-row:first-child{border-top:none;}
+  .beat-tag{
+    flex:0 0 50px; font-size:.58rem; font-weight:700; text-align:center;
+    padding:3px 3px; border-radius:6px; height:fit-content; margin-top:2px;
+  }
+  .beat-THREAT{background:rgba(224,138,138,.15); color:var(--threat);}
+  .beat-EMPATHY{background:rgba(138,180,224,.15); color:var(--empathy);}
+  .beat-TURN{background:rgba(224,196,138,.15); color:var(--turn);}
+  .beat-FUTURE{background:rgba(185,138,224,.15); color:var(--future);}
+  .line-text .en{ font-size:.8rem; color:var(--text); }
+  .line-text .jp{ font-size:.76rem; color:var(--text-dim); margin-top:3px; }
+  .meta-note{ font-size:.72rem; color:var(--text-dim); margin-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="sticky-top">
+  <div class="brand-bar"><span class="brand-name">Hollow Hour</span><span class="brand-tag">3ヶ月ロードマップ</span></div>
+  <nav class="toc" id="toc">
+    <a href="#overview">概要</a>
+    <a href="#videos">動画</a>
+    <a href="#week1">Week 1</a>
+    <a href="#week2">Week 2</a>
+    <a href="#week3">Week 3</a>
+    <a href="#week4">Week 4</a>
+    <a href="#month2">2ヶ月目</a>
+    <a href="#month3">3ヶ月目</a>
+  </nav>
+</div>
+
+<div class="wrap">
+
+  <section id="overview">
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="num">3</div>
+        <div class="label">投稿準備<br>済み動画</div>
+      </div>
+      <div class="status-card">
+        <div class="num">Day 1</div>
+        <div class="label">チャンネル<br>作成日</div>
+      </div>
+      <div class="status-card">
+        <div class="num">週5–7本</div>
+        <div class="label">目標<br>投稿ペース</div>
+      </div>
+    </div>
+
+    <div class="milestones">
+      <div class="m-head">収益化マイルストーン（YouTube公式条件）</div>
+      <div class="milestone-row">
+        <div class="tier">Tier 1</div>
+        <div class="cond">登録者500人 + Shorts視聴300万回(90日) or 視聴時間3,000h(12ヶ月)</div>
+      </div>
+      <div class="milestone-row">
+        <div class="tier">Tier 2</div>
+        <div class="cond">登録者1,000人 + Shorts視聴1,000万回(90日) or 視聴時間4,000h(12ヶ月)</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="videos">
+    <div class="section-title" style="margin-bottom:10px;">タイトル・説明欄コピペ</div>
+    <p class="week-goal" style="margin-top:-6px;">動画1〜3は投稿用に完パケ済み。動画4〜6は台本のみ（映像生成はこれから）、新フック構成（脅し→共感→解決→未来）を日英対訳で収録。以後の動画もここに追加していきます。</p>
+    <div class="legend">
+      <span class="lg-threat">脅し THREAT</span>
+      <span class="lg-empathy">共感 EMPATHY</span>
+      <span class="lg-turn">解決 TURN</span>
+      <span class="lg-future">未来 FUTURE</span>
+    </div>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画1</span>The Staircase That Counts（数え直すたびに変わる階段）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><div class="line-text"><div class="en">If you ever count the stairs in an old house, and lose count halfway, turn back.</div><div class="jp">もし古い家の階段を数えていて、途中で数を見失ったら、引き返しなさい。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Local legend says the old Hollow house has fourteen stairs.</div><div class="jp">地元の言い伝えでは、古いホロウ邸の階段は十四段あるという。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">But no one who's climbed them at night agrees on the number.</div><div class="jp">しかし夜にその階段を上った者で、段数が一致した者は誰もいない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">A student once counted them for a dare — twelve, then fifteen, then twelve again.</div><div class="jp">ある学生が度胸試しで数えたところ、十二段、次は十五段、また十二段だった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Halfway up, the house went silent.</div><div class="jp">階段の途中で、家全体が静まり返った。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Not quiet — silent, like the air itself had stopped moving.</div><div class="jp">ただ静かというのではなく、空気そのものが止まったような無音だった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">He reached the top and looked back down.</div><div class="jp">彼は上りきってから、振り返って下を見た。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">The stairs he'd just climbed were gone.</div><div class="jp">今しがた上ったはずの階段が、消えていた。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Just a smooth, sloped floor, like they'd never been there at all.</div><div class="jp">そこにあったのは、最初から階段などなかったかのような、なめらかな傾斜の床だけだった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">He never went back to check.</div><div class="jp">彼は二度と確かめには戻らなかった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Some say the house doesn't want to be counted.</div><div class="jp">この家は数えられることを望んでいない、と言う者もいる。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Follow for the next stairwell nobody talks about.</div><div class="jp">誰も語らない、次の階段の話はフォローして。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v1-title', this)">コピー</button></div>
+          <pre id="v1-title" class="field-body">The Staircase That Counts Differently Every Time #shorts #horror #urbanlegend</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v1-desc', this)">コピー</button></div>
+          <pre id="v1-desc" class="field-body">This old house's staircase never has the same number of stairs twice. Local legend says don't count them at night.
+
+A fictional/legendary story for entertainment purposes.
+
+#horrorstories #creepy #paranormal #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v1-tags', this)">コピー</button></div>
+          <pre id="v1-tags" class="field-body">horror stories, urban legend, creepy, scary shorts, paranormal, haunted house</pre>
+        </div>
+      </div>
+    </details>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画2</span>The Last Bus（最終バス）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><div class="line-text"><div class="en">The eleven forty-seven bus only stops for people who are already dead.</div><div class="jp">十一時四十七分のバスは、すでに死んでいる者のためにしか停まらない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">In a small town, drivers on the night route tell the same story.</div><div class="jp">小さな町で、夜間路線の運転手たちは皆同じ話をする。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">A passenger boards at an empty stop, sits in the back, and never speaks.</div><div class="jp">誰もいないはずの停留所で乗客が乗り込み、後部座席に座り、一言も話さない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">When the driver checks the mirror at the next stop, the seat is empty — but it's still warm.</div><div class="jp">次の停留所でミラーを確認すると、その席はもう空だ。だが、まだ温かい。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">One driver swears he saw the passenger's reflection in the window, even though the seat looked empty from the front.</div><div class="jp">ある運転手は、前から見ると席は空なのに、窓にはその乗客の姿が映っていたと断言する。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Records show the stop hasn't been used in forty years.</div><div class="jp">記録によれば、その停留所はもう四十年間使われていない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">It was shut down after an accident.</div><div class="jp">ある事故のあと、閉鎖された停留所だった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Nobody official will say what happened there.</div><div class="jp">そこで何が起きたのか、公にする者は誰もいない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">But drivers still slow down, just in case someone's waiting.</div><div class="jp">それでも運転手たちは、もしかしたら誰かが待っているかもしれないと、今も速度を落とす。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Follow for the next stop nobody wants to make.</div><div class="jp">誰も停まりたくない、次の停留所の話はフォローして。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v2-title', this)">コピー</button></div>
+          <pre id="v2-title" class="field-body">The Bus That Stops For No One (True Local Legend) #shorts #horror</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v2-desc', this)">コピー</button></div>
+          <pre id="v2-desc" class="field-body">Night bus drivers all tell the same story about the 11:47 route.
+
+A fictional/legendary story for entertainment purposes.
+
+#ghoststory #creepypasta #horror #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v2-tags', this)">コピー</button></div>
+          <pre id="v2-tags" class="field-body">ghost story, night bus, urban legend, creepy, horror shorts, scary story</pre>
+        </div>
+      </div>
+    </details>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画3</span>The Mirror Rule（鏡のルール）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><div class="line-text"><div class="en">Never check the mirror twice in a row after 3am — here's why.</div><div class="jp">午前三時を過ぎたら、鏡を続けて二度見てはいけない。理由はこうだ。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">An old rule, passed between roommates in dorms and shared apartments.</div><div class="jp">寮やシェアハウスのルームメイトの間で語り継がれてきた古いルール。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">If you glance at a mirror after 3am, don't look again right away — give it a few seconds.</div><div class="jp">午前三時以降に鏡をちらっと見たら、すぐにもう一度見てはいけない。数秒待つこと。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">The story goes that mirrors are slow — what you see isn't always what's happening right now.</div><div class="jp">鏡は「遅れている」のだという。映っているものが、今この瞬間とは限らない。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">One student ignored the rule, looked back too fast.</div><div class="jp">あるルールを無視した学生が、あまりに早く振り返って見てしまった。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Her reflection was still mid turn, a second behind her own movement.</div><div class="jp">彼女の鏡像は、まだ振り向いている途中だった。本人の動きより一秒遅れて。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">She backed out of the bathroom without breaking eye contact with the glass.</div><div class="jp">彼女は鏡から目を離さないまま、後ずさりで浴室を出た。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">She says the rule isn't superstition — it's a delay.</div><div class="jp">彼女いわく、あれは迷信ではなく「遅延」なのだという。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">And you don't want to catch what's on the other side of the delay.</div><div class="jp">そしてその遅延の向こう側にあるものを、あなたは見たくないはずだ。</div></div></div>
+        <div class="line-row"><div class="line-text"><div class="en">Follow if you want to know the other rules nobody tells new roommates.</div><div class="jp">新しいルームメイトには教えられない、他のルールを知りたければフォローして。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v3-title', this)">コピー</button></div>
+          <pre id="v3-title" class="field-body">Never Look In The Mirror Twice After 3AM #shorts #creepy</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v3-desc', this)">コピー</button></div>
+          <pre id="v3-desc" class="field-body">An old roommate rule that's more than superstition.
+
+A fictional/legendary story for entertainment purposes.
+
+#mirrorlegend #creepy #horrorstories #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v3-tags', this)">コピー</button></div>
+          <pre id="v3-tags" class="field-body">mirror legend, 3am, creepy rule, horror shorts, urban legend, scary</pre>
+        </div>
+      </div>
+    </details>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画4</span>The Numbers Station（数字放送局）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><span class="beat-tag beat-THREAT">脅し</span><div class="line-text"><div class="en">Static isn't empty. You've just never listened long enough.</div><div class="jp">ノイズは「何もない」わけじゃない。あなたがただ、長く聴いていないだけだ。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-EMPATHY">共感</span><div class="line-text"><div class="en">You've done it — scanning through radio static late at night, bored, restless, sure there's nothing on the other side.</div><div class="jp">夜遅く、暇つぶしにラジオのノイズをザッピングしたことがあるはず。何もないと思い込んで。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">There is.</div><div class="jp">何かは、いる。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">Since the Cold War, mysterious stations have read strings of numbers in flat, emotionless voices, on frequencies nobody officially owns.</div><div class="jp">冷戦時代から、誰も所有者を認めない周波数で、感情のない声が延々と数字を読み上げる謎の放送局が存在する。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">No government has ever confirmed who runs them. Some are still broadcasting tonight.</div><div class="jp">どの政府も運営者を認めたことはない。そして今夜も、いくつかは放送を続けている。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">Hobbyists who tune in report the same pattern — a tone, then numbers, for exactly the same number of minutes, every single time.</div><div class="jp">愛好家たちが聴くと、毎回同じパターンだという。トーン音の後に数字、それが寸分違わぬ時間続く。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">One listener recorded a station that read his own street name between the numbers.</div><div class="jp">ある聴取者は、数字の合間に自分の住む通りの名前が読み上げられるのを録音した。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">He never tuned into that frequency again.</div><div class="jp">彼は二度とその周波数に合わせなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">The stations are real. What they're for is still officially unknown.</div><div class="jp">この放送局は実在する。その目的は、今も公式には解明されていない。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">Next time you hit static, don't assume it's nothing. Follow for the next signal nobody can explain.</div><div class="jp">次にノイズに当たったら、何もないと思わないで。誰も説明できない次の信号は、フォローして。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v4-title', this)">コピー</button></div>
+          <pre id="v4-title" class="field-body">The Radio Station That Reads Your Street Name #shorts #mystery #urbanlegend</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v4-desc', this)">コピー</button></div>
+          <pre id="v4-desc" class="field-body">Static isn't empty. Numbers stations are a real unsolved mystery — and one listener says his got personal.
+
+A fictional/legendary story for entertainment purposes.
+
+#numbersstation #unsolvedmystery #creepy #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v4-tags', this)">コピー</button></div>
+          <pre id="v4-tags" class="field-body">numbers station, unsolved mystery, creepy radio, real mystery, cold war mystery, shortwave radio</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">サムネ文言</span><button class="copy-btn" onclick="copyBlock('v4-thumb', this)">コピー</button></div>
+          <pre id="v4-thumb" class="field-body">IT KNOWS YOUR STREET</pre>
+        </div>
+        <div class="meta-note">推奨モチーフ: window（seed 701）</div>
+      </div>
+    </details>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画5</span>The Photograph That Wasn't There（写らないはずの写真）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><span class="beat-tag beat-THREAT">脅し</span><div class="line-text"><div class="en">You've taken a hundred photos of empty rooms. Look closer at one of them.</div><div class="jp">誰もいない部屋の写真なんて、何百枚も撮ってきたはず。その一枚を、よく見てほしい。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-EMPATHY">共感</span><div class="line-text"><div class="en">Everyone does it — snapping a quick photo of a hallway or an empty room before they leave, without really looking through the lens.</div><div class="jp">誰でもやること。引っ越し前に廊下や空き部屋をレンズ越しにろくに見もせず、さっと撮る。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">A photography student did exactly that, documenting an apartment building before it got torn down.</div><div class="jp">ある写真専攻の学生も同じことをした。取り壊される前のアパートを記録するために。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">One shot, the third floor hallway, nothing unusual through the viewfinder.</div><div class="jp">三階の廊下を一枚。ファインダー越しには何も異常はなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">When she developed the film, two figures stood at the far end, facing away from the camera.</div><div class="jp">フィルムを現像すると、廊下の奥に二人の人影が、カメラに背を向けて立っていた。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">Building records showed no one had lived on that floor in over a decade.</div><div class="jp">建物の記録によれば、その階には十年以上誰も住んでいなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">She went back to check the hallway in person. It was almost ten feet shorter than the photo showed.</div><div class="jp">実際に廊下を確認しに行くと、写真に写っていたより三メートル近く短かった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">She still has the photo.</div><div class="jp">その写真は、今も彼女の手元にある。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">She won't say what's in the ones she took after that.</div><div class="jp">それ以降に撮った写真に何が写っているかは、誰にも話していない。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">Follow for what she found next, and look twice at your own hallway photos.</div><div class="jp">彼女が次に見つけたものはフォローして確認して。そして、自分が撮った廊下の写真も、もう一度見直して。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v5-title', this)">コピー</button></div>
+          <pre id="v5-title" class="field-body">She Photographed An Empty Hallway. Two People Showed Up. #shorts #horror</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v5-desc', this)">コピー</button></div>
+          <pre id="v5-desc" class="field-body">A student's single photo of an empty hallway came back with two figures who shouldn't exist.
+
+A fictional/legendary story for entertainment purposes.
+
+#creepyphoto #ghoststory #paranormal #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v5-tags', this)">コピー</button></div>
+          <pre id="v5-tags" class="field-body">creepy photo, ghost story, paranormal photo, horror shorts, urban legend, scary story</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">サムネ文言</span><button class="copy-btn" onclick="copyBlock('v5-thumb', this)">コピー</button></div>
+          <pre id="v5-thumb" class="field-body">TWO PEOPLE WEREN'T THERE</pre>
+        </div>
+        <div class="meta-note">推奨モチーフ: door（seed 801）</div>
+      </div>
+    </details>
+
+    <details class="video-item">
+      <summary><span><span class="vno">動画6</span>The Speaker That Answers（応答するスピーカー）</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="line-row"><span class="beat-tag beat-THREAT">脅し</span><div class="line-text"><div class="en">You think your smart speaker only listens when you say its name. That's what it wants you to think.</div><div class="jp">スマートスピーカーは呼びかけた時だけ聞いていると思っているだろう。それは、そう思わせたいだけだ。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-EMPATHY">共感</span><div class="line-text"><div class="en">You've heard it happen — the light turns on, it answers something, and nobody in the room said a word. You laughed it off as a glitch.</div><div class="jp">経験があるはず。ライトが勝手に光って何か答えるのに、部屋には誰も口を開いていない。バグだろうと笑って流した。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">One man didn't laugh for long.</div><div class="jp">ある男は、そう笑っていられたのも長くはなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">He woke at 3am to his speaker answering "yes," though he was alone and hadn't spoken.</div><div class="jp">午前三時、彼はスピーカーが「はい」と答える声で目を覚ました。彼は一人で、何も話していなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">He checked the history log. It showed no request, nothing sent, nothing heard.</div><div class="jp">履歴を確認したが、リクエストも送信も検出も、何も記録されていなかった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">The next night it happened again — and this time it used a nickname. One only his grandmother ever called him.</div><div class="jp">翌晩、再び同じことが起きた。今度はニックネームで呼ばれた。祖母しか彼をそう呼んだことがない名前だった。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-TURN">解決</span><div class="line-text"><div class="en">She had been dead for six years.</div><div class="jp">祖母は、六年前に亡くなっていた。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">He unplugged it the next morning.</div><div class="jp">彼は翌朝、コンセントを抜いた。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">It still lights up sometimes, even when the power's out.</div><div class="jp">それでも時々、電源が切れているはずなのに、光ることがある。</div></div></div>
+        <div class="line-row"><span class="beat-tag beat-FUTURE">未来</span><div class="line-text"><div class="en">Follow before yours answers back.</div><div class="jp">あなたのスピーカーが答え始める前に、フォローしておいて。</div></div></div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タイトル</span><button class="copy-btn" onclick="copyBlock('v6-title', this)">コピー</button></div>
+          <pre id="v6-title" class="field-body">Your Smart Speaker Doesn't Only Listen When You Call It #shorts #horror</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">説明欄</span><button class="copy-btn" onclick="copyBlock('v6-desc', this)">コピー</button></div>
+          <pre id="v6-desc" class="field-body">He swears he never said the wake word. It answered anyway — and it knew a name no one else did.
+
+A fictional/legendary story for entertainment purposes.
+
+#smarthome #creepypasta #horror #shorts</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">タグ</span><button class="copy-btn" onclick="copyBlock('v6-tags', this)">コピー</button></div>
+          <pre id="v6-tags" class="field-body">smart speaker horror, creepypasta, technology horror, urban legend, scary shorts, horror stories</pre>
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="field-label">サムネ文言</span><button class="copy-btn" onclick="copyBlock('v6-thumb', this)">コピー</button></div>
+          <pre id="v6-thumb" class="field-body">IT ANSWERED WITHOUT BEING CALLED</pre>
+        </div>
+        <div class="meta-note">推奨モチーフ: mirror（seed 901）</div>
+      </div>
+    </details>
+  </section>
+
+  <section id="week1" class="week-card">
+    <div class="section-title"><span class="wk">Week 1 ・ 7/24–7/30</span> 立ち上げ</div>
+    <p class="week-goal">動画1〜3を投稿して最初の反応データを取る</p>
+    <ul class="task-list">
+      <li><span class="box"></span><span class="txt">チャンネルアイコン・バナーを設定する<span class="tag">済み想定</span></span></li>
+      <li><span class="box"></span><span class="txt">動画1〜3を2〜3日おきに投稿（コピペ用タイトル・説明欄を使用）</span></li>
+      <li><span class="box"></span><span class="txt">各動画の説明欄にフィクション表記が入っているか確認</span></li>
+      <li><span class="box"></span><span class="txt">投稿は毎回「Shorts」として認識されているか確認（縦型9:16）</span></li>
+      <li><span class="box"></span><span class="txt">最初のコメントが来たら簡単に返信する（エンゲージメント信号になる）</span></li>
+      <li><span class="box"></span><span class="txt">Claudeに次のバッチ（台本5本）を依頼する</span></li>
+    </ul>
+    <div class="checkin"><b>週末チェックイン：</b> 各動画の「クリック率」と「平均視聴維持率」をスクショしてClaudeに共有 → 伸びた型を分析します。</div>
+  </section>
+
+  <section id="week2" class="week-card">
+    <div class="section-title"><span class="wk">Week 2 ・ 7/31–8/6</span> 検証・最適化</div>
+    <p class="week-goal">反応の良かったフックの型を特定し、台本パターンを寄せていく</p>
+    <ul class="task-list">
+      <li><span class="box"></span><span class="txt">週5〜7本ペースでの投稿を継続</span></li>
+      <li><span class="box"></span><span class="txt">Week1のデータを踏まえ、伸びたフック文言の傾向をClaudeと確認</span></li>
+      <li><span class="box"></span><span class="txt">戦略2（雑学トリビア）の要素を1〜2本混ぜてみる</span></li>
+      <li><span class="box"></span><span class="txt">サムネイルのA/Bパターンを試す（設定する場合）</span></li>
+      <li><span class="box"></span><span class="txt">登録者数・Shorts視聴回数（90日累計）の推移を記録し始める</span></li>
+      <li><span class="box"></span><span class="txt">動画4〜6（台本納品済み・新フック構成）を映像化して投稿</span></li>
+    </ul>
+    <div class="checkin"><b>週末チェックイン：</b> トラフィックソースの内訳もあわせて共有すると、次の企画の切り口を精査しやすくなります。初速データ（視聴維持率が低い場合）は台本の冒頭フックを見直すサインです — 動画4以降は「常識破壊フック」型に変更済み。</div>
+  </section>
+
+  <section id="week3" class="week-card">
+    <div class="section-title"><span class="wk">Week 3 ・ 8/7–8/13</span> 量産・拡張</div>
+    <p class="week-goal">伸びている型を量産しつつ、ロングフォーム展開の準備を始める</p>
+    <ul class="task-list">
+      <li><span class="box"></span><span class="txt">投稿ペースを維持（伸びが良ければ増やす、頭打ちなら型を変える）</span></li>
+      <li><span class="box"></span><span class="txt">既存Shorts 5〜8本を束ねたコンピレーション企画をClaudeに依頼</span></li>
+      <li><span class="box"></span><span class="txt">Tier1条件（登録者500人/Shorts視聴300万回）への到達度を確認</span></li>
+      <li><span class="box"></span><span class="txt">コメント欄の傾向（どんな話に反応が集まるか）をメモしておく</span></li>
+    </ul>
+    <div class="checkin"><b>週末チェックイン：</b> Tier1に近い場合は、AdSense準備・2段階認証など収益化申請の事前準備を進めておくとスムーズです。</div>
+  </section>
+
+  <section id="week4" class="week-card">
+    <div class="section-title"><span class="wk">Week 4 ・ 8/14–8/20</span> 定着・月次振り返り</div>
+    <p class="week-goal">投稿サイクルを仕組み化し、1ヶ月の結果を踏まえて2ヶ月目の方針を決める</p>
+    <ul class="task-list">
+      <li><span class="box"></span><span class="txt">投稿ペースを継続しつつ、初のロングフォーム動画を投稿</span></li>
+      <li><span class="box"></span><span class="txt">1ヶ月の登録者数・視聴時間・Shorts視聴回数の推移をまとめる</span></li>
+      <li><span class="box"></span><span class="txt">伸びたジャンル／伸びなかったジャンルをClaudeと総括</span></li>
+      <li><span class="box"></span><span class="txt">2ヶ月目の投稿頻度・ジャンル比率を再設計</span></li>
+      <li><span class="box"></span><span class="txt">Tier1到達済みなら、Tier2に向けた投稿本数の目安を再計算</span></li>
+    </ul>
+    <div class="checkin"><b>月末チェックイン：</b> 1ヶ月分のアナリティクス（概要画面のスクショでOK）を共有してもらえれば、2ヶ月目のロードマップを作成します。</div>
+  </section>
+
+  <section id="month2">
+    <div class="section-title">2ヶ月目（Week 5〜8）</div>
+    <p class="week-goal">新フック構成（動画4〜6）の効果を検証しつつ、伸びた型を量産する</p>
+
+    <div class="week-card">
+      <div class="section-title"><span class="wk">Week 5–6 ・ 8/21–9/3</span> 新フックの検証</div>
+      <p class="week-goal">動画4〜6を投稿し、旧フック（動画1〜3）との維持率の差を確認する</p>
+      <ul class="task-list">
+        <li><span class="box"></span><span class="txt">動画4〜6を映像化（新背景アクセント込み）し投稿</span></li>
+        <li><span class="box"></span><span class="txt">動画1〜3（旧フック）と動画4〜6（新フック）の視聴維持率を比較</span></li>
+        <li><span class="box"></span><span class="txt">伸びた「モチーフ×ストーリー」の組み合わせをClaudeと分析</span></li>
+        <li><span class="box"></span><span class="txt">週5〜7本ペースを継続</span></li>
+      </ul>
+      <div class="checkin"><b>週末チェックイン：</b> 動画1〜6の視聴維持率をまとめて共有 → 新フックの効果を数値で判定します。</div>
+    </div>
+
+    <div class="week-card">
+      <div class="section-title"><span class="wk">Week 7–8 ・ 9/4–9/17</span> 量産・拡張</div>
+      <p class="week-goal">伸びている型を量産しつつ、視覚バリエーションを増やす</p>
+      <ul class="task-list">
+        <li><span class="box"></span><span class="txt">伸びている型（フック文言・ストーリー種別）を2〜3本量産</span></li>
+        <li><span class="box"></span><span class="txt">新モチーフ（廊下・鏡以外の視覚バリエーション）の追加をClaudeに相談</span></li>
+        <li><span class="box"></span><span class="txt">コメント欄の傾向を集計し、リクエストの多い都市伝説ジャンルを把握</span></li>
+        <li><span class="box"></span><span class="txt">登録者数・Shorts視聴回数（90日累計）の推移を記録</span></li>
+      </ul>
+      <div class="checkin"><b>月末チェックイン：</b> 2ヶ月目のアナリティクスを共有 → Tier1到達ペースを再計算し、3ヶ月目の方針を固めます。</div>
+    </div>
+  </section>
+
+  <section id="month3">
+    <div class="section-title">3ヶ月目（Week 9〜13）</div>
+    <p class="week-goal">収益化ライン（Tier1）到達を目指し、運用を仕組み化する</p>
+
+    <div class="week-card">
+      <div class="section-title"><span class="wk">Week 9–10 ・ 9/18–10/1</span> Tier1到達に向けて</div>
+      <p class="week-goal">投稿を安定運用フェーズに移行し、Tier1条件への到達度を確認する</p>
+      <ul class="task-list">
+        <li><span class="box"></span><span class="txt">Tier1条件（登録者500人 + Shorts視聴300万回/90日 or 視聴時間3,000h/12ヶ月）の到達状況を確認</span></li>
+        <li><span class="box"></span><span class="txt">到達見込みが立てばAdSenseアカウント作成・2段階認証など事前準備を進める</span></li>
+        <li><span class="box"></span><span class="txt">伸びの良いフォーマットに投稿を一本化し、量産効率を上げる</span></li>
+      </ul>
+      <div class="checkin"><b>週末チェックイン：</b> Tier1到達／到達見込み時期をClaudeと確認します。</div>
+    </div>
+
+    <div class="week-card">
+      <div class="section-title"><span class="wk">Week 11–13 ・ 10/2–10/22</span> 収益化申請・次フェーズ策定</div>
+      <p class="week-goal">Tier1到達済みならYPPに申請し、3ヶ月の総括をもとに4ヶ月目以降を設計する</p>
+      <ul class="task-list">
+        <li><span class="box"></span><span class="txt">Tier1到達済みならYouTubeパートナープログラムに申請</span></li>
+        <li><span class="box"></span><span class="txt">3ヶ月分のアナリティクスを総括（伸びたジャンル・投稿頻度・平均維持率）</span></li>
+        <li><span class="box"></span><span class="txt">Tier2（登録者1,000人 + Shorts視聴1,000万回/90日 or 視聴時間4,000h/12ヶ月）に向けたロードマップをClaudeに依頼</span></li>
+        <li><span class="box"></span><span class="txt">ロングフォーム展開（コンピレーション動画）の投稿頻度を決定</span></li>
+      </ul>
+      <div class="checkin"><b>3ヶ月末チェックイン：</b> ここまでのアナリティクスを共有してもらえれば、4ヶ月目以降のロードマップを新規作成します。</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Hollow Hour Channel Roadmap ・ 台本やタイトル/説明欄はClaudeとのチャットからいつでも追加依頼できます</footer>
+
+<script>
+  // active TOC highlighting on scroll (in-memory only)
+  const links = Array.from(document.querySelectorAll('nav.toc a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const setActive = (id) => {
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+id));
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) setActive(e.target.id);
+    });
+  }, { rootMargin: '-56px 0px -70% 0px', threshold: 0 });
+  sections.forEach(s => s && io.observe(s));
+  setActive('overview');
+  links.forEach(a => a.addEventListener('click', () => setActive(a.getAttribute('href').slice(1))));
+
+  // simple in-memory checkbox toggle (no storage, resets on reload)
+  document.querySelectorAll('.task-list .box').forEach(box=>{
+    box.addEventListener('click', ()=>{
+      box.classList.toggle('checked');
+      box.closest('li').classList.toggle('done');
+    });
+  });
+
+  // copy-to-clipboard for title/description/tags blocks
+  function fallbackCopy(text){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  function copyBlock(id, btn) {
+    const text = document.getElementById(id).innerText;
+    const flash = () => {
+      const old = btn.textContent;
+      btn.textContent = 'コピーしました';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(flash).catch(() => { fallbackCopy(text); flash(); });
+    } else {
+      fallbackCopy(text);
+      flash();
+    }
+  }
+</script>
+
+</body>
+</html>
